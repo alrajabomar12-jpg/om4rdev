@@ -1,0 +1,431 @@
+@import "tailwindcss";
+
+/* Design tokens (SPEC §4). Checked against the logo: its fills sample at
+   ~#0090FF / #00C0FF / #0048F0 / #F0F0F0, within tolerance of the values below. */
+:root {
+  --bg: #05070d;
+  --surface: #0b1020;
+  --surface-2: #111833;
+  --border: rgb(120 160 255 / 0.12);
+  --border-strong: rgb(120 160 255 / 0.28);
+  --text: #f2f6ff;
+  --text-muted: #9aa6c4;
+  --text-dim: #5f6b8a;
+  --accent: #1e8cff;
+  --accent-bright: #3fc3ff;
+  --accent-deep: #0a4dff;
+  --accent-navy: #0a1a4f;
+  --live: #22c55e;
+  --danger: #f04438;
+  --gradient-accent: linear-gradient(135deg, #3fc3ff 0%, #1e8cff 50%, #0a4dff 100%);
+  /* White on --accent is 3.4:1, so button fills stay in the deep range (>= 5:1 everywhere). */
+  --gradient-button: linear-gradient(135deg, #1565f0 0%, #0a4dff 100%);
+  --glow: 0 0 40px rgb(30 140 255 / 0.35);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-dim: var(--text-dim);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-navy: var(--accent-navy);
+  --color-live: var(--live);
+  --color-danger: var(--danger);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-glow: var(--glow);
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 1.0625rem;
+  }
+}
+
+::selection {
+  background: rgb(30 140 255 / 0.35);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 3px;
+}
+
+/* ---------- Type roles ---------- */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+.text-h1 {
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.text-h2 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+.text-stat {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.container-site {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+@media (min-width: 640px) {
+  .container-site {
+    padding-inline: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  .container-site {
+    padding-inline: 32px;
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out,
+    border-color 200ms ease-out,
+    background-color 200ms ease-out;
+}
+.btn-primary {
+  background: var(--gradient-button);
+  color: #fff;
+  box-shadow: 0 8px 24px -8px rgb(10 77 255 / 0.6);
+}
+.btn-primary:hover {
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  background: var(--accent-deep);
+  transform: translateY(0);
+}
+.btn-outline {
+  border: 1px solid var(--border-strong);
+  background: rgb(11 16 32 / 0.6);
+  color: var(--text);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--accent-bright);
+}
+
+/* ---------- Hero collage (CSS-only drift) ---------- */
+@keyframes drift-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@keyframes drift-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.collage-row {
+  animation: drift-left var(--drift-duration, 75s) linear infinite;
+}
+.collage-row[data-direction="right"] {
+  animation-name: drift-right;
+}
+
+/* ---------- Verified badge shimmer ---------- */
+@keyframes badge-shimmer {
+  0% {
+    transform: translateX(-120%) rotate(20deg);
+  }
+  100% {
+    transform: translateX(220%) rotate(20deg);
+  }
+}
+.badge-shimmer {
+  animation: badge-shimmer 1.6s ease-out 0.6s 2 both;
+}
+
+/* ---------- Live dot ---------- */
+/* Transform + opacity only, so the endless pulse runs on the compositor (box-shadow repaints every frame). */
+@keyframes live-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+.live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--live);
+  flex-shrink: 0;
+}
+.live-dot-pulse {
+  position: relative;
+}
+.live-dot-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--live);
+  animation: live-pulse 2s ease-out infinite;
+}
+
+/* ---------- Section fade-up (only when JS is running, so no-JS still shows content) ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out;
+}
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Native dialogs ---------- */
+dialog::backdrop {
+  background: rgb(2 4 10 / 0.85);
+  backdrop-filter: blur(6px);
+}
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .collage-row,
+  .badge-shimmer,
+  .live-dot-pulse::after {
+    animation: none !important;
+  }
+  .live-dot-pulse::after {
+    display: none;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Admin (calm utility UI on the same tokens) ---------- */
+.admin-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.admin-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.admin-hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+.admin-input {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  padding: 0.625rem 0.875rem;
+  color: var(--text);
+  font-size: 0.9375rem;
+  transition: border-color 200ms ease-out;
+}
+.admin-input:hover {
+  border-color: rgb(120 160 255 / 0.4);
+}
+.admin-input:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+.admin-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.admin-error {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ff8a80;
+}
+.btn-sm {
+  min-height: 2.25rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+}
+.btn-danger {
+  border: 1px solid rgb(240 68 56 / 0.5);
+  background: rgb(240 68 56 / 0.12);
+  color: #ffb4ab;
+}
+.btn-danger:hover {
+  background: rgb(240 68 56 / 0.22);
+  border-color: var(--danger);
+}
+.btn-danger-solid {
+  background: #c8281c;
+  color: #fff;
+}
+.btn-danger-solid:hover {
+  background: #a91f15;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  transition: background-color 200ms ease-out, border-color 200ms ease-out;
+}
+.icon-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+.icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.admin-switch {
+  appearance: none;
+  position: relative;
+  width: 2.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: background-color 200ms ease-out;
+}
+.admin-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  background: var(--text-muted);
+  transition: transform 200ms ease-out, background-color 200ms ease-out;
+}
+.admin-switch:checked {
+  background: var(--accent-deep);
+  border-color: var(--accent);
+}
+.admin-switch:checked::after {
+  transform: translateX(1rem);
+  background: #fff;
+}
